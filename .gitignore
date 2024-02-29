@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build files
+dist/
+build/
+api/tmp
+tmp
+
+# Dependency directories
+/.pnp/
+.pnp.js
+
+# IDE files
+.idea/
+.vscode/
