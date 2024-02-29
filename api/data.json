@@ -1,0 +1,18 @@
+{
+    "1": {
+        "country": "Ethiopia",
+        "region": "Yirgacheffe",
+        "producer": "Munin",
+        "name": "Burtukaana Wote Konga",
+        "process": "Natural",
+        "flavours": "Round, Citric, With Stone fruit notes, and a good structure."
+    },
+    "2": {
+        "country": "Ethiopia",
+        "region": "Sidamo",
+        "producer": "Munin",
+        "name": "Samii Bensa",
+        "process": "Washed",
+        "flavours": "Herbal, tropical, fruity acidity."
+    }
+}
