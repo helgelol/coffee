@@ -1,2 +1,2 @@
-# coffee
+# Coffee
 Rate coffee beans
