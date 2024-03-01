@@ -4,7 +4,13 @@
   "name": "Coffee",
   "dockerComposeFile": "docker-compose.yml",
   "service": "api",
+  "mounts": ["source=${env:HOME}/.ssh,target=/home/vscode/.ssh,readonly"],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "forwardPorts": [8080],
-  "postCreateCommand": "go install github.com/cosmtrek/air@latest && cd api && air main.go"
+  "forwardPorts": [8080, 5432],
+  "postCreateCommand": "go install github.com/cosmtrek/air@latest && cd api && air main.go",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ivangabriele.vscode-git-add-and-commit"]
+    }
+  }
 }
