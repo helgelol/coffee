@@ -21,8 +21,13 @@ var (
 var db *sql.DB
 
 type Bean struct {
-	ID   int
-	Name string
+	id       int
+	country  string
+	region   string
+	producer string
+	name     string
+	process  string
+	flavours string
 }
 
 func main() {
@@ -52,7 +57,7 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	beans := []Bean{}
 	for rows.Next() {
 		var bean Bean
-		if err := rows.Scan(&bean.ID, &bean.Name); err != nil {
+		if err := rows.Scan(&bean.id, &bean.name); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -64,14 +69,14 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, bean := range beans {
-		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.ID, bean.Name)
+		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
 	}
 }
 
 func getBeanByID(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[len("/1"):]
 	var bean Bean
-	err := db.QueryRow("SELECT id, name FROM beans WHERE id = $1", id).Scan(&bean.ID, &bean.Name)
+	err := db.QueryRow("SELECT id, name FROM beans WHERE id = $1", id).Scan(&bean.id, &bean.name)
 	switch {
 	case err == sql.ErrNoRows:
 		http.NotFound(w, r)
@@ -80,6 +85,6 @@ func getBeanByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	default:
-		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.ID, bean.Name)
+		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
 	}
 }
