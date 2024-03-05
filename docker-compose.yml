@@ -1,0 +1,30 @@
+version: "3.8"
+
+volumes:
+  db-data:
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+
+    volumes:
+      - ./api:/app:cached
+    command: air
+    ports:
+      - "8080:8080"
+
+  db:
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init/mysql-init.sql:/docker-entrypoint-initdb.d/initdb.sql
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
