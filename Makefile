@@ -14,11 +14,16 @@ endif
 help: ## Display this help.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Backend
+##@ Development
 
 .PHONY: env
-env: ## Create a new .env file from .env.example
-	docker compose up
+env: ## Create a new .env file example
+	@echo "MYSQL_ROOT_PASSWORD=" > .env
+	@echo "MYSQL_DATABASE=" >> .env
+	@echo "MYSQL_USER=" >> .env
+	@echo "MYSQL_PASSWORD=" >> .env
+	@echo "MYSQL_PORT=" >> .env
+
 
 .PHONY: dev
 dev: ## Start local development server
@@ -35,6 +40,7 @@ vet: ## Run go vet against code.
 .PHONY: test
 test: fmt vet ## Run tests.
 	go test ./...
+
 
 ##@ Build
 
