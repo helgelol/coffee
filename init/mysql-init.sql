@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS beans (
 
 INSERT INTO beans (country, region, producer, name, process, flavours) VALUES
   ("Ethiopia","Yirgacheffe","Munin","Burtukaana Wote Konga","Natural","Round, Citric, With Stone fruit notes, and a good structure."),
-  ("Ethiopia","Sidamo","Munin","Samii Bensa","Washed","Herbal, tropical, fruity acidity.");
-  ("Ethiopia", "Yirgacheffe", "Munin", "Burtukaana Danche","Natural", "Round, Sweety, Citric, with stone fruit notes")
+  ("Ethiopia","Sidamo","Munin","Samii Bensa","Washed","Herbal, tropical, fruity acidity."),
+  ("Ethiopia", "Yirgacheffe", "Munin", "Burtukaana Danche","Natural", "Round, Sweety, Citric, with stone fruit notes");
