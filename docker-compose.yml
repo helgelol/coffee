@@ -22,7 +22,7 @@ services:
     image: mariadb:latest
     restart: unless-stopped
     volumes:
-      - db-data:/var/lib/mysql
+      - ./db-data:/var/lib/mysql
       - ./init/mysql-init.sql:/docker-entrypoint-initdb.d/initdb.sql
     env_file:
       - .env
