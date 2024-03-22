@@ -22,6 +22,7 @@ env: ## Create a new .env file example
 	@echo "MYSQL_DATABASE=" >> .env
 	@echo "MYSQL_USER=" >> .env
 	@echo "MYSQL_PASSWORD=" >> .env
+	@echo "MYSQL_HOST=" >> .env
 	@echo "MYSQL_PORT=" >> .env
 
 
