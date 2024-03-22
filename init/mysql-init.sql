@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS beans (
     producer VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     process VARCHAR(255) NOT NULL,
-    flavours VARCHAR(255) NOT NULL,
+    flavours VARCHAR(255) NOT NULL
 );
 
 
