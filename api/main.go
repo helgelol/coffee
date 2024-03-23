@@ -7,15 +7,16 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
+	"k8s.io/apimachinery/pkg/util/json"
 )
 
 var (
-	host     = os.Getenv("POSTGRES_HOSTNAME")
-	port     = 5432
-	user     = os.Getenv("POSTGRES_USER")
-	password = os.Getenv("POSTGRES_PASSWORD")
-	dbname   = os.Getenv("POSTGRES_DB")
+	port     = os.Getenv("MYSQL_PORT")
+	user     = os.Getenv("MYSQL_USER")
+	password = os.Getenv("MYSQL_PASSWORD")
+	host     = os.Getenv("MYSQL_HOST")
+	dbname   = os.Getenv("MYSQL_DATABASE")
 )
 
 var db *sql.DB
@@ -32,22 +33,26 @@ type Bean struct {
 
 func main() {
 	var err error
-	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	db, err = sql.Open("postgres", connStr)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
+	db, err = sql.Open("mysql", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	http.HandleFunc("/", getAllBeans)
-	http.HandleFunc("/1", getBeanByID)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/all", getAllBeans)
+	// mux.HandleFunc("/bean/{id}", getBeanByID)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Acknowledged")
+	})
 
 	log.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 
 func getAllBeans(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT * FROM beans")
+	rows, err := db.Query("SELECT id, country, region, producer, name, process, flavours FROM beans")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -57,7 +62,7 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	beans := []Bean{}
 	for rows.Next() {
 		var bean Bean
-		if err := rows.Scan(&bean.id, &bean.name); err != nil {
+		if err := rows.Scan(&bean.id, &bean.country, &bean.region, &bean.producer, &bean.name, &bean.process, &bean.flavours); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -67,24 +72,32 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	for _, bean := range beans {
-		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
-	}
-}
-
-func getBeanByID(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Path[len("/1"):]
-	var bean Bean
-	err := db.QueryRow("SELECT id, name FROM beans WHERE id = $1", id).Scan(&bean.id, &bean.name)
-	switch {
-	case err == sql.ErrNoRows:
-		http.NotFound(w, r)
-		return
-	case err != nil:
+	jsonData, err := json.Marshal(beans)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	default:
-		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+
+	// for _, bean := range beans {
+	// 	fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
+	// }
 }
+
+// func getBeanByID(w http.ResponseWriter, r *http.Request, id string) {
+// 	// id := r.URL.Path[len("/1"):]
+// 	var bean Bean
+// 	err := db.QueryRow("SELECT id, name FROM beans WHERE id = ?", id).Scan(&bean.id, &bean.name)
+// 	switch {
+// 	case err == sql.ErrNoRows:
+// 		http.NotFound(w, r)
+// 		return
+// 	case err != nil:
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	default:
+// 		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
+// 	}
+// }
