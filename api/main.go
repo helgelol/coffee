@@ -2,13 +2,13 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"k8s.io/apimachinery/pkg/util/json"
 )
 
 var (
@@ -22,13 +22,13 @@ var (
 var db *sql.DB
 
 type Bean struct {
-	id       int
-	country  string
-	region   string
-	producer string
-	name     string
-	process  string
-	flavours string
+	ID       int    `json:"id"`
+	Country  string `json:"country"`
+	Region   string `json:"region"`
+	Producer string `json:"producer"`
+	Name     string `json:"name"`
+	Process  string `json:"process"`
+	Flavours string `json:"flavours"`
 }
 
 func main() {
@@ -62,7 +62,7 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	beans := []Bean{}
 	for rows.Next() {
 		var bean Bean
-		if err := rows.Scan(&bean.id, &bean.country, &bean.region, &bean.producer, &bean.name, &bean.process, &bean.flavours); err != nil {
+		if err := rows.Scan(&bean.ID, &bean.Country, &bean.Region, &bean.Producer, &bean.Name, &bean.Process, &bean.Flavours); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -80,10 +80,6 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
-
-	// for _, bean := range beans {
-	// 	fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
-	// }
 }
 
 // func getBeanByID(w http.ResponseWriter, r *http.Request, id string) {
