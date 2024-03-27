@@ -40,19 +40,22 @@ func main() {
 	}
 	defer db.Close()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/all", getAllBeans)
-	// mux.HandleFunc("/bean/{id}", getBeanByID)
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	router := http.NewServeMux()
+	router.HandleFunc("GET /all", getAllBeans)
+	router.HandleFunc("GET /bean/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		getBeanByID(w, r, id)
+	})
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Acknowledged")
 	})
 
 	log.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func getAllBeans(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, country, region, producer, name, process, flavours FROM beans")
+	rows, err := db.Query("SELECT * FROM beans")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -82,18 +85,25 @@ func getAllBeans(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-// func getBeanByID(w http.ResponseWriter, r *http.Request, id string) {
-// 	// id := r.URL.Path[len("/1"):]
-// 	var bean Bean
-// 	err := db.QueryRow("SELECT id, name FROM beans WHERE id = ?", id).Scan(&bean.id, &bean.name)
-// 	switch {
-// 	case err == sql.ErrNoRows:
-// 		http.NotFound(w, r)
-// 		return
-// 	case err != nil:
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	default:
-// 		fmt.Fprintf(w, "ID: %d, Name: %s\n", bean.id, bean.name)
-// 	}
-// }
+func getBeanByID(w http.ResponseWriter, r *http.Request, id string) {
+	query := fmt.Sprintf("SELECT * FROM beans WHERE id = '%s'", id)
+	var bean Bean
+	err := db.QueryRow(query).Scan(&bean.ID, &bean.Country, &bean.Region, &bean.Producer, &bean.Name, &bean.Process, &bean.Flavours)
+	switch {
+	case err == sql.ErrNoRows:
+		http.NotFound(w, r)
+		return
+	case err != nil:
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	default:
+		jsonData, err := json.Marshal(bean)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+	}
+}
