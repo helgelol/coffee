@@ -5,5 +5,5 @@ Rate coffee beans
 # Development
 
 ```
-docker-compose up
+docker compose up
 ```
