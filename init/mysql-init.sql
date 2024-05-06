@@ -17,4 +17,5 @@ INSERT INTO beans (country, region, producer, name, process, flavours) VALUES
   ("Ethiopia","Sidamo","Munin","Samii Bensa","Washed","Herbal, tropical, fruity acidity."),
   ("Ethiopia", "Yirgacheffe", "Munin", "Burtukaana Danche","Natural", "Round, Sweety, Citric, with stone fruit notes"),
   ("El Salvador", "Apaneca-Ilamatepec", "Jacobsen og Svart", "El Limo", "Anaerobisk Ferment", "Vinous, floral, tropical fruit and caramel"),
-  ("Ethiopia", "Shakisso, Guji", "Jacobsen og Svart", "Koromii", "Berry dried", "Strawberry, fruit, mandarin");
+  ("Ethiopia", "Shakisso, Guji", "Jacobsen og Svart", "Koromii", "Berry dried", "Strawberry, fruit, mandarin"),
+  ("Kenya", "Kirinyaga", "Munin","PB Kiri", "Washed", "Pleasant citrus, fruity, sweet, hints of tea");
