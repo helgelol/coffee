@@ -30,6 +30,10 @@ env: ## Create a new .env file example
 dev: ## Start local development server
 	docker compose up
 
+# .PHONY: dbclean
+# dbclean: ## Wipes DB data
+#     rm -rf db-data
+
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	go fmt ./...
