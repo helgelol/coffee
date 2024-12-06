@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    container_name: api
     env_file:
       - .env
 
@@ -16,6 +17,7 @@ services:
   db:
     image: postgres:17.0-bookworm
     restart: unless-stopped
+    container_name: db
     volumes:
       - ./db-data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
