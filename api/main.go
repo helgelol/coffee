@@ -8,15 +8,15 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 
 var (
-	port     = os.Getenv("MYSQL_PORT")
-	user     = os.Getenv("MYSQL_USER")
-	password = os.Getenv("MYSQL_PASSWORD")
-	host     = os.Getenv("MYSQL_HOST")
-	dbname   = os.Getenv("MYSQL_DATABASE")
+	port     = os.Getenv("POSTGRES_PORT")
+	user     = os.Getenv("POSTGRES_USER")
+	password = os.Getenv("POSTGRES_PASSWORD")
+	host     = os.Getenv("POSTGRES_HOST")
+	dbname   = os.Getenv("POSTGRES_DB")
 )
 
 var db *sql.DB
@@ -33,8 +33,9 @@ type Bean struct {
 
 func main() {
 	var err error
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
-	db, err = sql.Open("mysql", connStr)
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

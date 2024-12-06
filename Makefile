@@ -18,17 +18,20 @@ help: ## Display this help.
 
 .PHONY: env
 env: ## Create a new .env file example
-	@echo "MYSQL_ROOT_PASSWORD=" > .env
-	@echo "MYSQL_DATABASE=" >> .env
-	@echo "MYSQL_USER=" >> .env
-	@echo "MYSQL_PASSWORD=" >> .env
-	@echo "MYSQL_HOST=" >> .env
-	@echo "MYSQL_PORT=" >> .env
+	@echo "POSTGRES_PORT" > .env
+    @echo "POSTGRES_USER" >> .env
+    @echo "POSTGRES_PASSWORD" >> .env
+    @echo "POSTGRES_HOST" >> .env
+    @echo "POSTGRES_DB" >> .env
 
 
 .PHONY: dev
 dev: ## Start local development server
 	docker compose up
+
+# .PHONY: dbclean
+# dbclean: ## Wipes DB data
+#     rm -rf db-data
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.

@@ -1,14 +1,10 @@
-version: "3.8"
-
-volumes:
-  db-data:
-
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    container_name: api
     env_file:
       - .env
 
@@ -19,12 +15,16 @@ services:
       - "8080:8080"
 
   db:
-    image: mariadb:latest
+    image: postgres:17.0-bookworm
     restart: unless-stopped
+    container_name: db
     volumes:
-      - ./db-data:/var/lib/mysql
-      - ./init/mysql-init.sql:/docker-entrypoint-initdb.d/initdb.sql
+      - ./db-data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
     env_file:
       - .env
     ports:
-      - "3306:3306"
+      - "5432:5432"
+
+volumes:
+  db-data:
