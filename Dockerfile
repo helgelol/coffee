@@ -1,6 +1,6 @@
-FROM golang:1.22.0-bookworm as api
+FROM golang:1.23.2-bookworm AS api
 
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 CMD [ "air main.go" ]
