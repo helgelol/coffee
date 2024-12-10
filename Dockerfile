@@ -1,4 +1,4 @@
-FROM golang:1.23.2-bookworm AS api
+FROM golang:1.23.4-alpine AS api
 
 WORKDIR /app
 

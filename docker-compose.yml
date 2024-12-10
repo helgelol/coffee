@@ -15,7 +15,7 @@ services:
       - "8080:8080"
 
   db:
-    image: postgres:17.0-bookworm
+    image: postgres:17.2-alpine
     restart: unless-stopped
     container_name: db
     volumes:
