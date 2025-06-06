@@ -1,0 +1,20 @@
+name: Test Workflow
+on:
+  workflow_dispatch:
+
+jobs:
+ tests:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Check previous status
+       run: echo $LAST_STATUS
+       env:
+         LAST_STATUS: ${{ vars.LAST_STATUS }}
+     - name: Update LAST_STATUS to FAILURE
+       run: |
+         curl -X PATCH \
+         -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+         -H "Accept: application/vnd.github+json" \
+         https://api.github.com/repos/${{ github.repository }}/actions/variables/LAST_STATUS \
+         -d '{"name":"LAST_STATUS", "value":"FAILURE"}'
+
